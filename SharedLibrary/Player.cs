@@ -1,7 +1,10 @@
-﻿namespace SharedLibrary;
+﻿namespace SharedLibrary {
 
-public class Player {
-    public int Id { get; set; }
-    public int Level { get; set; }
-    public float Health{ get; set; }
+    [System.Serializable]
+    public class Player {
+        public int Id;
+        public int Name;
+        public int Health;
+        public int Score;
+    }
 }

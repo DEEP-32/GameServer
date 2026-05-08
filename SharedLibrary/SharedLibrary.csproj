@@ -1,9 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net10.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <ImplicitUsings>disable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
+
+    <Import Project="local-dev.props" Condition="Exists('local-dev.props')" />
+
+    <Target Name="PushToUnity" AfterTargets="Build" Condition="'$(MyUnityPluginPath)' != ''">
+        <Message Text="🚀 Pushing Shared Library to Unity: $(MyUnityPluginPath)" Importance="high" />
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(MyUnityPluginPath)" />
+    </Target>
 
 </Project>
