@@ -8,9 +8,9 @@ namespace Server.Controllers;
 [Route("[controller]")]
 public class PlayerController  : ControllerBase{
     
-    private readonly PlayerService _playerService;
+    private readonly IPlayerService _playerService;
     
-    public PlayerController(PlayerService playerService) {
+    public PlayerController(IPlayerService playerService) {
         _playerService = playerService;
     }
     

@@ -5,6 +5,5 @@
         public int Id;
         public int Name;
         public int Health;
-        public int Score;
     }
 }
