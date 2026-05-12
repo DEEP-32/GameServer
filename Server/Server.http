@@ -4,3 +4,12 @@ GET {{Server_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+POST {{Server_HostAddress}}/authentication/register
+Content-Type: application/json
+
+{
+    "Username": "testuser",
+    "Password": "TestPassword123!"
+}
+
+###

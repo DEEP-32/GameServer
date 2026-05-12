@@ -19,6 +19,7 @@ builder.Services
 builder.Services.AddOpenApi();
 
 builder.Services.AddScoped<IPlayerService,PlayerService>();
+builder.Services.AddScoped<IAuthenticationService,AuthenticationService>();
 
 var app = builder.Build();
 
