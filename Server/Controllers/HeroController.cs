@@ -7,12 +7,12 @@ namespace Server.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class PlayerController  : ControllerBase{
+public class HeroController  : ControllerBase{
     
     private readonly IPlayerService playerService;
     readonly GameDbContext dbContext;
     
-    public PlayerController(IPlayerService playerService,GameDbContext dbContext) {
+    public HeroController(IPlayerService playerService,GameDbContext dbContext) {
         this.playerService = playerService;
         this.dbContext = dbContext;
         
@@ -27,8 +27,8 @@ public class PlayerController  : ControllerBase{
     }
     
     [HttpGet("{id}")]
-    public Player Get([FromRoute] int id) {
-        var player = new Player() {
+    public Hero Get([FromRoute] int id) {
+        var player = new Hero() {
             Id = id
         };
 
@@ -42,9 +42,9 @@ public class PlayerController  : ControllerBase{
 
 
     [HttpPost]
-    public Player Post(Player player) {
+    public Hero Post(Hero hero) {
         Console.WriteLine("Player has beed added to database");
-        return player;
+        return hero;
     }
         
 }
