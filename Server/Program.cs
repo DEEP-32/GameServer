@@ -1,7 +1,12 @@
 using Server.Data;
+using Server.Models;
 using Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var settings = new Settings();
+builder.Configuration.Bind("Settings", settings);
+builder.Services.AddSingleton(settings);
 
 var connString = builder.Configuration.GetConnectionString("Db");
 builder.Services.AddSqlite<GameDbContext>(connString);

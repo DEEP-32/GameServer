@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Server.Data;
 using Server.Services;
 using SharedLibrary;
 
@@ -8,10 +9,21 @@ namespace Server.Controllers;
 [Route("[controller]")]
 public class PlayerController  : ControllerBase{
     
-    private readonly IPlayerService _playerService;
+    private readonly IPlayerService playerService;
+    readonly GameDbContext dbContext;
     
-    public PlayerController(IPlayerService playerService) {
-        _playerService = playerService;
+    public PlayerController(IPlayerService playerService,GameDbContext dbContext) {
+        this.playerService = playerService;
+        this.dbContext = dbContext;
+        
+        var user = new User() {
+            Username = "DEEP-32",
+            Password = "pass",
+            Salt = "salt"
+        };
+
+        dbContext.Add(user);
+        dbContext.SaveChanges();
     }
     
     [HttpGet("{id}")]
@@ -19,8 +31,12 @@ public class PlayerController  : ControllerBase{
         var player = new Player() {
             Id = id
         };
+
         
-        _playerService.DoSomething();
+        
+        
+        
+        playerService.DoSomething();
         return player;
     }
 
