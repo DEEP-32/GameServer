@@ -8,8 +8,33 @@ POST {{Server_HostAddress}}/authentication/register
 Content-Type: application/json
 
 {
-    "Username": "testuser",
-    "Password": "TestPassword123!"
+    "Username": "testUser2",
+    "Password": "TestPassword123!"  
 }
 
+> {%
+   client.global.set("access_token", response.body.access_token);
+   client.log("Just saved the token , can use {{access_token}} now");
+ %}
+
 ###
+
+
+
+POST {{Server_HostAddress}}/Hero/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjMiLCJuYmYiOjE3Nzg4Mzc3NzIsImV4cCI6MTgxMDM3Mzc3MiwiaWF0IjoxNzc4ODM3NzcyfQ.hVIeipDObyYybw0Ra9hvO5CieNYyEdEVE8IpKsrM1ZA
+
+{
+    "Name": "Superman"
+}
+
+
+###
+POST {{Server_HostAddress}}/authentication/login
+Content-Type: application/json
+
+{
+  "Username": "testuser",
+  "Password": "TestPassword123!"
+}

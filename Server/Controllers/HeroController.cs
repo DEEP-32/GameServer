@@ -1,29 +1,24 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Server.Data;
 using Server.Services;
 using SharedLibrary;
+using SharedLibrary.Requests;
 
 namespace Server.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class HeroController  : ControllerBase{
     
-    private readonly IPlayerService playerService;
+    readonly IHeroService heroService;
     readonly GameDbContext dbContext;
     
-    public HeroController(IPlayerService playerService,GameDbContext dbContext) {
-        this.playerService = playerService;
+    public HeroController(IHeroService heroService,GameDbContext dbContext) {
+        this.heroService = heroService;
         this.dbContext = dbContext;
-        
-        var user = new User() {
-            Username = "DEEP-32",
-            Password = "pass",
-            Salt = "salt"
-        };
-
-        dbContext.Add(user);
-        dbContext.SaveChanges();
     }
     
     [HttpGet("{id}")]
@@ -36,15 +31,25 @@ public class HeroController  : ControllerBase{
         
         
         
-        playerService.DoSomething();
+        heroService.DoSomething();
         return player;
     }
 
 
     [HttpPost]
-    public Hero Post(Hero hero) {
-        Console.WriteLine("Player has beed added to database");
+    public Hero Post(CreateHeroRequest heroRequest) {
+        var userId = int.Parse(User.FindFirst("id").Value);
+        var user = dbContext.Users.Include(u => u.Heroes).First(u => u.Id == userId);
+        
+        var hero = new Hero() {
+            Name = heroRequest.Name,
+            User = user
+        };
+        
+        dbContext.Add(hero);
+        dbContext.SaveChanges();
         return hero;
+
     }
         
 }

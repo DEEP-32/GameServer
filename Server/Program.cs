@@ -1,3 +1,6 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Server.Data;
 using Server.Models;
 using Server.Services;
@@ -14,12 +17,23 @@ builder.Services.AddSqlite<GameDbContext>(connString);
     
 builder.Services
     .AddControllers()
-    .AddNewtonsoftJson();
+    .AddNewtonsoftJson(o => {
+        o.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+    });
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-builder.Services.AddScoped<IPlayerService,PlayerService>();
+builder.Services.AddScoped<IHeroService,HeroService>();
 builder.Services.AddScoped<IAuthenticationService,AuthenticationService>();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(o => {
+        o.TokenValidationParameters = new TokenValidationParameters() {
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(settings.BearerKey)),
+            ValidateIssuerSigningKey = true,
+            ValidateAudience = false,
+            ValidateIssuer = false
+        };
+    });
 
 var app = builder.Build();
 
@@ -31,6 +45,7 @@ if (app.Environment.IsDevelopment()) {
 
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 

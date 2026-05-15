@@ -1,12 +1,12 @@
 ﻿namespace Server.Services;
 
 
-public interface IPlayerService {
+public interface IHeroService {
     void DoSomething();
 }
 
 
-public class PlayerService : IPlayerService{
+public class HeroService : IHeroService{
     
     public void DoSomething() {
         Console.WriteLine("PlayerService : hey!");
