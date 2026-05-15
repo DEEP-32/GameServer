@@ -2,7 +2,9 @@
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using Server.Data;
 using Server.Models;
 using SharedLibrary;
@@ -33,7 +35,7 @@ public class AuthenticationService : IAuthenticationService {
         return (true, "User created");
     }
     public (bool success, string context) Login(string username, string password) {
-        var user = dbContext.Users.FirstOrDefault(u => u.Username == username);
+        var user = dbContext.Users.Include(u=>u.Heroes).FirstOrDefault(u => u.Username == username);
         if(user == null) return (false, "User not found");
         
         if(user.Password != AuthenticationHelpers.ComputeHash(password, user.Salt))
@@ -44,7 +46,8 @@ public class AuthenticationService : IAuthenticationService {
 
     private ClaimsIdentity AssembleClaimsIdentity(User user) {
         var subject = new ClaimsIdentity(new[] {
-            new Claim("id", user.Id.ToString())
+            new Claim("id", user.Id.ToString()),
+            new Claim("heroes", JsonConvert.SerializeObject(user.Heroes.Select(h => h.Id)))
         });
         
         return subject;

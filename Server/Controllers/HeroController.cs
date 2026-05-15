@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Server.Data;
 using Server.Services;
 using SharedLibrary;
@@ -21,18 +22,17 @@ public class HeroController  : ControllerBase{
         this.dbContext = dbContext;
     }
     
-    [HttpGet("{id}")]
-    public Hero Get([FromRoute] int id) {
-        var player = new Hero() {
-            Id = id
-        };
+    [HttpPost("{id}")]
+    public IActionResult Edit([FromRoute] int id,[FromBody] CreateHeroRequest req) {
+        var heroesId = JsonConvert.DeserializeObject<List<int>>(User.FindFirst("heroes").Value);
 
+        if (!heroesId.Contains(id)) return Unauthorized(); 
         
+        var hero = dbContext.Heroes.First(h => h.Id == id);
+        hero.Name = req.Name;
+        dbContext.SaveChanges();
         
-        
-        
-        heroService.DoSomething();
-        return player;
+        return Ok();
     }
 
 
@@ -48,6 +48,10 @@ public class HeroController  : ControllerBase{
         
         dbContext.Add(hero);
         dbContext.SaveChanges();
+        
+        //right now doing this so that our user dont get sent to client
+        hero.User = null;
+        
         return hero;
 
     }
